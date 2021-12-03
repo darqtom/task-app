@@ -1,0 +1,22 @@
+{
+  "name": "task-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:darqtom/task-app.git",
+  "author": "darqtom <dariusztomczyszyn@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^4.2.1",
+    "mongoose": "^6.0.14",
+    "validator": "^13.7.0"
+  },
+  "scripts": {
+    "start": "node src.index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "type": "module",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
