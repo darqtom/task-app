@@ -1,4 +1,5 @@
 import { Router } from "express";
+
 import Task from "../models/task.js";
 
 const router = new Router();
@@ -44,6 +45,7 @@ router
   .patch(async (req, res) => {
     const _id = req.params.id;
 
+    const updates = Object.keys(req.body);
     const allowedUpdates = ["description", "completed"];
     const isValidOperation = Object.keys(req.body).every((key) =>
       allowedUpdates.includes(key)
@@ -54,14 +56,14 @@ router
     }
 
     try {
-      const task = await Task.findByIdAndUpdate(_id, req.body, {
-        new: true,
-        runValidators: true,
-      });
+      const task = await Task.findById(_id);
 
       if (!task) {
         return res.status(404).send();
       }
+
+      updates.forEach((update) => (task[update] = req.body[update]));
+      await task.save();
 
       return res.send(task);
     } catch (error) {
