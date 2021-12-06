@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const connect = async () => {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/task-manager-api", {
+    await mongoose.connect(process.env.MONGODB_URL, {
       useNewUrlParser: true,
     });
   } catch (error) {
