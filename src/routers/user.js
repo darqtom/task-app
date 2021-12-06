@@ -1,7 +1,9 @@
 import { Router } from "express";
+import sharp from "sharp";
 
 import User from "../models/user.js";
 import { auth } from "../middleware/auth";
+import { avatarUpload } from "../middleware/upload";
 
 const router = new Router();
 
@@ -99,5 +101,51 @@ router
       return res.status(500).send(error);
     }
   });
+
+router
+  .route("/me/avatar")
+  .post(
+    auth,
+    avatarUpload.single("avatar"),
+    async (req, res) => {
+      const buffer = await sharp(req.file.buffer)
+        .png()
+        .resize({ width: 250, height: 250 })
+        .toBuffer();
+
+      req.user.avatar = buffer;
+      await req.user.save();
+
+      res.send();
+    },
+    (error, req, res, next) => {
+      return res.status(400).send({ error: error.message });
+    }
+  )
+  .delete(auth, async (req, res) => {
+    req.user.avatar = undefined;
+    try {
+      await req.user.save();
+      return res.send();
+    } catch (error) {
+      return res.status(500).send({ error: error.message });
+    }
+  });
+
+router.route("/:id/avatar").get(async (req, res) => {
+  const _id = req.params.id;
+  try {
+    const user = await User.findById(_id);
+
+    if (!user || !user.avatar) {
+      throw new Error("No avatar found");
+    }
+
+    res.set("Content-Type", "image/png");
+    return res.send(user.avatar);
+  } catch (error) {
+    return res.status(404).send({ error: error.message });
+  }
+});
 
 export default router;
