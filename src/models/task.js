@@ -10,7 +10,7 @@ const taskSchema = new mongoose.Schema(
       ref: "User",
     },
   },
-  { toJSON: { virtuals: true } }
+  { toJSON: { virtuals: true }, timestamps: true }
 );
 
 const Task = mongoose.model("Task", taskSchema);
