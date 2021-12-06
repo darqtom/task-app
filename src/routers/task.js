@@ -8,7 +8,7 @@ router
   .route("/")
   .get(async (req, res) => {
     const match = {};
-    const options = {};
+    const options = { sort: {} };
 
     if (req.query.completed) {
       match.completed = req.query.completed === "true";
@@ -20,6 +20,11 @@ router
 
     if (req.query.skip) {
       options.skip = parseInt(req.query.skip);
+    }
+
+    if (req.query.sortAt) {
+      const [property, order] = req.query.sortAt.split("_");
+      options.sort[property] = order === "asc" ? 1 : -1;
     }
 
     try {
