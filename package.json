@@ -18,10 +18,19 @@
   },
   "scripts": {
     "start": "node -r esm src.index.js",
-    "dev": "env-cmd -f ./config/dev.env nodemon -r esm src/index.js"
+    "dev": "env-cmd -f ./config/dev.env nodemon -r esm src/index.js",
+    "test": "env-cmd -f ./config/test.env jest",
+    "test:watch": "yarn run test --watch",
+    "test:coverage": "yarn run test --coverage"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "babel-jest": "^27.4.2",
     "env-cmd": "^10.1.0",
-    "nodemon": "^2.0.15"
+    "jest": "^27.4.3",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.1.6"
   }
 }

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
-import { hash, compare } from "bcryptjs";
+import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import Task from "./task";
@@ -90,7 +90,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
     throw new Error("Unable to login!");
   }
 
-  const isMatch = await compare(password, user.password);
+  const isMatch = await bcryptjs.compare(password, user.password);
 
   if (!isMatch) {
     throw new Error("Unable to login!");
@@ -104,7 +104,7 @@ userSchema.pre("save", async function (next) {
 
   if (user.isModified("password")) {
     try {
-      user.password = await hash(user.password, 8);
+      user.password = await bcryptjs.hash(user.password, 8);
     } catch (error) {
       next(error);
     }

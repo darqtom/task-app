@@ -12,7 +12,8 @@ router
   .get(auth, async (req, res) => {
     try {
       const users = await User.find({});
-      return res.send(users);
+      const usersObj = await users.map((user) => user.toJSON());
+      return res.send(usersObj);
     } catch (error) {
       return res.status(500).send(error);
     }
@@ -35,12 +36,11 @@ router.route("/signin").post(async (req, res) => {
       req.body.email,
       req.body.password
     );
-
     const token = await user.generateAuthToken();
 
     res.send({ user, token });
   } catch (error) {
-    res.status(400).send();
+    res.status(400).send({ error: error.message });
   }
 });
 
@@ -49,8 +49,8 @@ router.route("/signout").post(auth, async (req, res) => {
     req.user.tokens = req.user.tokens.filter(
       (token) => token.token !== req.token
     );
-    await req.user.save();
 
+    await req.user.save();
     return res.send();
   } catch (error) {
     res.status(500).send(error);
@@ -61,7 +61,6 @@ router.route("/signoutall").post(auth, async (req, res) => {
   try {
     req.user.tokens = [];
     await req.user.save();
-
     return res.send();
   } catch (error) {
     return res.status(500).send(error);
