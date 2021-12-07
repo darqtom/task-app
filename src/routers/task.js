@@ -44,7 +44,7 @@ router
 
     try {
       await task.save();
-      return res.send(task);
+      return res.status(201).send(task);
     } catch (error) {
       return res.status(400).send(error);
     }

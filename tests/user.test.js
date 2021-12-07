@@ -1,26 +1,10 @@
 import request from "supertest";
-import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
 
 import { app } from "../src/app";
 import User from "../src/models/user";
+import { userOne, setupDatabase } from "./fixtures/db";
 
-const userOneId = new mongoose.Types.ObjectId();
-const userOne = {
-  _id: userOneId,
-  name: "Mariusz",
-  email: "mariusz@mariusz.com",
-  password: "mariusz",
-  tokens: [
-    { token: jwt.sign({ _id: userOneId }, process.env.JWT_SECRET) },
-    { token: jwt.sign({ _id: userOneId }, process.env.JWT_SECRET + 1) },
-  ],
-};
-
-beforeEach(async () => {
-  await User.deleteMany();
-  await new User(userOne).save();
-});
+beforeEach(setupDatabase);
 
 test("Should signup a new user", async () => {
   const response = await request(app)
@@ -221,5 +205,5 @@ test("Should get all users", async () => {
     .send()
     .expect(200);
 
-  expect(response.body).toHaveLength(1);
+  expect(response.body).toHaveLength(2);
 });
